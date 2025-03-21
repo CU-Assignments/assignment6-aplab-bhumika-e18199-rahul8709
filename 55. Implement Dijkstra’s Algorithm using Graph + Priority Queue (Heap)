@@ -1,0 +1,72 @@
+#include <vector>
+#include <queue>
+#include <climits>
+#include <unordered_map>
+
+using namespace std;
+
+
+typedef pair<int, int> Edge; 
+
+
+unordered_map<char, int> dijkstra(const unordered_map<char, vector<Edge>>& graph, char start) {
+   
+    priority_queue<Edge, vector<Edge>, greater<Edge>> pq;
+    
+
+    unordered_map<char, int> dist;
+    for (const auto& pair : graph) {
+        dist[pair.first] = INT_MAX;
+    }
+    dist[start] = 0;
+    
+
+    pq.push({0, start});
+    
+    while (!pq.empty()) {
+        int current_distance = pq.top().first;
+        char current_node = pq.top().second;
+        pq.pop();
+        
+        
+        if (current_distance > dist[current_node]) {
+            continue;
+        }
+        
+        for (const Edge& neighbor : graph.at(current_node)) {
+            char next_node = neighbor.second;
+            int edge_weight = neighbor.first;
+            
+            int new_distance = current_distance + edge_weight;
+          
+            if (new_distance < dist[next_node]) {
+                dist[next_node] = new_distance;
+                pq.push({new_distance, next_node});
+            }
+        }
+    }
+    
+    return dist;
+}
+
+int main() {
+    
+    unordered_map<char, vector<Edge>> graph = {
+        {'A', {{1, 'B'}, {4, 'C'}}},
+        {'B', {{1, 'A'}, {2, 'C'}, {5, 'D'}}},
+        {'C', {{4, 'A'}, {2, 'B'}, {1, 'D'}}},
+        {'D', {{5, 'B'}, {1, 'C'}}}
+    };
+
+    char start_node = 'A';
+    
+    unordered_map<char, int> distances = dijkstra(graph, start_node);
+    
+   
+    cout << "Shortest distances from node " << start_node << ":\n";
+    for (const auto& pair : distances) {
+        cout << "Distance from " << start_node << " to " << pair.first << ": " << pair.second << endl;
+    }
+
+    return 0;
+}
