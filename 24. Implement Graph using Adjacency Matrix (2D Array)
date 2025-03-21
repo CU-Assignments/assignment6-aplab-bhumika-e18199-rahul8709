@@ -1,0 +1,69 @@
+#include <vector>
+
+using namespace std;
+
+class Graph {
+private:
+    vector<vector<int>> adjMatrix;  
+    int numVertices;               
+
+public:
+
+    Graph(int vertices) {
+        numVertices = vertices;
+        adjMatrix.resize(vertices, vector<int>(vertices, 0));  
+    }
+
+
+    void addEdge(int u, int v, int weight) {
+        if (u >= 0 && u < numVertices && v >= 0 && v < numVertices) {
+            adjMatrix[u][v] = weight;
+            adjMatrix[v][u] = weight;  
+        }
+    }
+
+ 
+    void display() {
+        cout << "Adjacency Matrix: \n";
+        for (int i = 0; i < numVertices; ++i) {
+            for (int j = 0; j < numVertices; ++j) {
+                cout << adjMatrix[i][j] << " ";
+            }
+            cout << endl;
+        }
+    }
+
+
+    bool hasEdge(int u, int v) {
+        return adjMatrix[u][v] != 0;  
+    }
+
+    
+    int getEdgeWeight(int u, int v) {
+        return adjMatrix[u][v];
+    }
+};
+
+int main() {
+    int vertices = 5;
+    Graph g(vertices);
+
+
+    g.addEdge(0, 1, 1);
+    g.addEdge(0, 4, 2);
+    g.addEdge(1, 2, 3);
+    g.addEdge(1, 4, 4);
+    g.addEdge(2, 3, 5);
+    g.addEdge(3, 4, 6);
+
+   
+    g.display();
+
+    
+    if (g.hasEdge(0, 4)) {
+        cout << "Edge exists between node 0 and node 4 with weight: " << g.getEdgeWeight(0, 4) << endl;
+    }
+
+    return 0;
+}
+
