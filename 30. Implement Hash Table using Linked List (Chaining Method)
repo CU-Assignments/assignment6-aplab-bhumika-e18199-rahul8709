@@ -1,0 +1,98 @@
+#include <iostream>
+#include <list>
+#include <vector>
+using namespace std;
+
+struct KeyValuePair {
+    int key;
+    int value;
+
+    KeyValuePair(int k, int v) : key(k), value(v) {}
+};
+
+class HashTable {
+private:
+    vector<list<KeyValuePair>> table;
+    int capacity;  
+
+    int hashFunction(int key) {
+        return key % capacity;
+    }
+
+public:
+    HashTable(int size) {
+        capacity = size;
+        table.resize(capacity);
+    }
+
+    void insert(int key, int value) {
+        int index = hashFunction(key);
+        for (auto& kv : table[index]) {
+            if (kv.key == key) {
+                kv.value = value;  
+                return;
+            }
+        }
+        table[index].push_back(KeyValuePair(key, value));
+    }
+
+    bool search(int key, int& value) {
+        int index = hashFunction(key);
+        for (auto& kv : table[index]) {
+            if (kv.key == key) {
+                value = kv.value;
+                return true;
+            }
+        }
+        return false;  
+    }
+
+    void remove(int key) {
+        int index = hashFunction(key);
+        table[index].remove_if([key](KeyValuePair& kv) { return kv.key == key; });
+    }
+
+    void display() {
+        for (int i = 0; i < capacity; i++) {
+            cout << "Index " << i << ": ";
+            for (auto& kv : table[i]) {
+                cout << "(" << kv.key << ", " << kv.value << ") -> ";
+            }
+            cout << "nullptr" << endl;
+        }
+    }
+};
+
+int main() {
+    HashTable ht(10);  
+
+    ht.insert(10, 100);
+    ht.insert(20, 200);
+    ht.insert(30, 300);
+    ht.insert(15, 150);
+    ht.insert(25, 250);
+    ht.insert(35, 350);
+
+    cout << "Hash Table after insertions:" << endl;
+    ht.display();
+
+    int value;
+    if (ht.search(15, value)) {
+        cout << "Found key 15 with value: " << value << endl;
+    } else {
+        cout << "Key 15 not found!" << endl;
+    }
+
+    ht.remove(20);
+    cout << "\nHash Table after removing key 20:" << endl;
+    ht.display();
+
+    if (ht.search(20, value)) {
+        cout << "Found key 20 with value: " << value << endl;
+    } else {
+        cout << "Key 20 not found!" << endl;
+    }
+
+    return 0;
+}
+
