@@ -1,0 +1,91 @@
+#include <iostream>
+#include <climits> 
+using namespace std;
+
+struct Node {
+    int data;
+    int min;  
+    Node* next;
+    
+    Node(int value) : data(value), min(value), next(nullptr) {}
+};
+
+class MinStack {
+private:
+    Node* topNode;  
+
+public:
+    MinStack() : topNode(nullptr) {}
+
+    void push(int value) {
+        Node* newNode = new Node(value);
+        
+        if (topNode != nullptr) {
+            newNode->min = std::min(value, topNode->min);
+        }
+        
+        newNode->next = topNode; 
+        topNode = newNode; 
+    }
+
+    void pop() {
+        if (topNode == nullptr) {
+            cout << "Stack is empty!" << endl;
+            return;
+        }
+        
+        Node* temp = topNode;
+        topNode = topNode->next; 
+        delete temp;  
+    }
+
+    int top() {
+        if (topNode == nullptr) {
+            cout << "Stack is empty!" << endl;
+            return -1;  
+        }
+        return topNode->data;
+    }
+
+    int getMin() {
+        if (topNode == nullptr) {
+            cout << "Stack is empty!" << endl;
+            return -1;  
+        }
+        return topNode->min;
+    }
+
+
+    ~MinStack() {
+        while (topNode != nullptr) {
+            pop();  
+        }
+    }
+};
+
+int main() {
+    MinStack stack;
+
+    stack.push(5);
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.push(3);
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.push(7);
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.push(2);
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.pop();
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.pop();
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    stack.pop();
+    cout << "Top: " << stack.top() << ", Min: " << stack.getMin() << endl;
+
+    return 0;
+}
