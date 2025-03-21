@@ -1,0 +1,74 @@
+#include <iostream>
+using namespace std;
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+TreeNode* insert(TreeNode* root, int value) {
+    if (root == nullptr) {
+        return new TreeNode(value);
+    }
+
+    if (value < root->data) {
+        root->left = insert(root->left, value);
+    } else {
+        root->right = insert(root->right, value);
+    }
+
+    return root;
+}
+
+TreeNode* flattenBST(TreeNode* root) {
+    if (root == nullptr) {
+        return nullptr;
+    }
+
+    TreeNode* leftList = flattenBST(root->left);
+    TreeNode* rightList = flattenBST(root->right);
+
+    root->left = nullptr;
+
+    if (leftList != nullptr) {
+        TreeNode* temp = leftList;
+        while (temp->right != nullptr) {
+            temp = temp->right;
+        }
+        temp->right = root;
+    }
+
+    root->right = rightList;
+
+    return (leftList != nullptr) ? leftList : root;
+}
+
+void printList(TreeNode* root) {
+    while (root != nullptr) {
+        cout << root->data << " ";
+        root = root->right;
+    }
+    cout << endl;
+}
+
+int main() {
+    TreeNode* root = nullptr;
+    
+    root = insert(root, 50);
+    insert(root, 30);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 70);
+    insert(root, 60);
+    insert(root, 80);
+
+    TreeNode* flattenedList = flattenBST(root);
+    
+    cout << "Flattened Linked List: ";
+    printList(flattenedList);
+
+    return 0;
+}
